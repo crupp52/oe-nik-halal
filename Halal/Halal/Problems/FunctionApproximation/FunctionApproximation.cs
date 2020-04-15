@@ -10,6 +10,7 @@ namespace Halal.Problems.FunctionApproximation
 
         public void LoadKnownValuesFromFile(string filename)
         {
+            KnownValues = new List<ValuePair>();
             string[] fileInput = File.ReadAllLines(filename);
 
             foreach (string line in fileInput)

@@ -40,8 +40,11 @@
   <ItemGroup>
     <Compile Include="Problems\FunctionApproximation\FunctionApproximation.cs" />
     <Compile Include="Problems\FunctionApproximation\ValuePair.cs" />
+    <Compile Include="Problems\TravellingSalesmanProblem\Town.cs" />
+    <Compile Include="Problems\TravellingSalesmanProblem\TravellingSalesmanProblem.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Solvers\GeneticAlgorithm\GeneticAlgorithm.cs" />
     <Compile Include="Solvers\HillClimbing\HillClimbing.cs" />
   </ItemGroup>
   <ItemGroup>
