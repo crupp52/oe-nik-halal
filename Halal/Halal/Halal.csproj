@@ -45,10 +45,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solvers\GeneticAlgorithm\GeneticAlgorithm.cs" />
+    <Compile Include="Solvers\GeneticAlgorithm\Models\Chromosome.cs" />
+    <Compile Include="Solvers\GeneticAlgorithm\Models\Population.cs" />
     <Compile Include="Solvers\HillClimbing\HillClimbing.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Utils" />
+    <Folder Include="Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
