@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Halal.Problems.TravellingSalesmanProblem;
 using Halal.Solvers.GeneticAlgorithm.Models;
 
@@ -9,13 +14,18 @@ namespace Halal.Solvers.GeneticAlgorithm
     public class GeneticAlgorithm
     {
         private static Random rnd = new Random();
+        private static object _lock = new object();
+        private static Stopwatch stopwatch = new Stopwatch();
 
         private int iteration;
         private int didntNewBest;
         private Chromosome pBest;
+        private StringBuilder logStringBuilder;
 
         public TravellingSalesmanProblem TSP { get; set; }
         public int NumberOfPopulation { get; set; }
+        public double RateOfElitism { get; set; }
+        public double RateOfMutation { get; set; }
         public List<Chromosome> Result { get; set; }
 
         public GeneticAlgorithm(TravellingSalesmanProblem tsp, string filename = "Towns.txt")
@@ -25,52 +35,68 @@ namespace Halal.Solvers.GeneticAlgorithm
             tsp.LoadTownsFromFile(filename);
 
             NumberOfPopulation = 50;
+            RateOfMutation = 0.1;
+            RateOfElitism = 0.2;
 
             Result = new List<Chromosome>();
+
+            logStringBuilder = new StringBuilder();
         }
 
         public void Solve()
         {
+            stopwatch.Start();
+
             Population population = InitializePopulation(new Chromosome() { Towns = TSP.Towns });
             pBest = Evaluation(population);
             Result.Add((Chromosome)pBest.Clone());
             iteration = 0;
             didntNewBest = 0;
 
-            while (didntNewBest < 5000)
+            Task.Run(() => GetInformation());
+            do
             {
-                if (pBest.Fitness < Result[Result.Count - 1].Fitness)
+                while (!Console.KeyAvailable)
                 {
-                    Result.Add((Chromosome)pBest);
-                    Console.WriteLine(this);
+                    if (pBest.Fitness < Result[Result.Count - 1].Fitness)
+                    {
+                        Result.Add((Chromosome)pBest);
+                        ToLog();
+                        didntNewBest = 0;
+                    }
+                    else
+                    {
+                        didntNewBest++;
+                    }
+
+                    Population newPopulation = SelectParents(population);
+
+                    while (newPopulation.Chromosomes.Count <= NumberOfPopulation)
+                    {
+                        Population matingPopulation = Selection(population);
+                        Chromosome newChromosome = CrossOver(matingPopulation);
+                        newChromosome = Mutate(newChromosome);
+                        newPopulation.Chromosomes.Add(newChromosome);
+                    }
+
+                    population = (Population)newPopulation.Clone();
+                    pBest = Evaluation(population);
+
+                    iteration++;
                 }
-                else
-                {
-                    didntNewBest++;
-                }
 
-                Population newPopulation = SelectParents(population);
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
 
-                while (newPopulation.Chromosomes.Count <= NumberOfPopulation)
-                {
-                    Population matingPopulation = Selection(population);
-                    Chromosome newChromosome = CrossOver(matingPopulation);
-                    newChromosome = Mutate(newChromosome);
-                    newPopulation.Chromosomes.Add(newChromosome);
-                }
+            stopwatch.Stop();
 
-                population = (Population)newPopulation.Clone();
-                pBest = Evaluation(population);
-
-                iteration++;
-            }
-
-            //TSP.SaveTownsToFile("output.log");
+            TSP.Towns = pBest.Towns;
+            SaveLog();
+            TSP.SaveTownsToFile("output.log");
         }
 
         private Chromosome Mutate(Chromosome chromosome)
         {
-            for (int i = 0; i < chromosome.Towns.Count/20; i++)
+            for (int i = 0; i < chromosome.Towns.Count * RateOfMutation; i++)
             {
                 int a = rnd.Next(0, chromosome.Towns.Count);
                 int b = rnd.Next(0, chromosome.Towns.Count);
@@ -89,7 +115,7 @@ namespace Halal.Solvers.GeneticAlgorithm
             Chromosome parent1 = (Chromosome)population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)].Clone();
             Chromosome parent2 = (Chromosome)population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)].Clone();
 
-            int cutIndex = rnd.Next(0, population.Chromosomes.Count);
+            int cutIndex = rnd.Next(0, parent1.Towns.Count);
 
             int i = 0;
 
@@ -99,11 +125,12 @@ namespace Halal.Solvers.GeneticAlgorithm
                 i++;
             }
 
-
-            while (i < parent2.Towns.Count)
+            foreach (Town town in parent2.Towns)
             {
-                child.Towns.Add((Town)parent2.Towns[i].Clone());
-                i++;
+                if (child.Towns.Where(x => (x.X == town.X && x.Y == town.Y)).FirstOrDefault() == null)
+                {
+                    child.Towns.Add(town);
+                }
             }
 
             child.Fitness = TSP.Objective(child.Towns);
@@ -132,17 +159,12 @@ namespace Halal.Solvers.GeneticAlgorithm
         {
             population.Chromosomes = population.Chromosomes.OrderBy(x => x.Fitness).ToList();
 
-            Population newPopulation = new Population()
+            Population newPopulation = new Population();
+
+            for (int i = 0; i < NumberOfPopulation * RateOfElitism / 4; i++)
             {
-                Chromosomes = new List<Chromosome>
-                {
-                    (Chromosome)population.Chromosomes[0].Clone(),
-                    (Chromosome)population.Chromosomes[1].Clone(),
-                    (Chromosome)population.Chromosomes[2].Clone(),
-                    (Chromosome)population.Chromosomes[3].Clone(),
-                    (Chromosome)population.Chromosomes[4].Clone(),
-                }
-            };
+                newPopulation.Chromosomes.Add((Chromosome)population.Chromosomes[i].Clone());
+            }
 
             return newPopulation;
         }
@@ -184,6 +206,41 @@ namespace Halal.Solvers.GeneticAlgorithm
             }
 
             return pBest;
+        }
+
+        private void ToLog()
+        {
+            logStringBuilder.AppendLine("Clear");
+            logStringBuilder.AppendLine($"Iteration\t{iteration}");
+            logStringBuilder.AppendLine($"Fitness\t{pBest.Fitness}");
+            foreach (Town town in pBest.Towns)
+            {
+                logStringBuilder.AppendLine($"Point\t{town.X}\t{town.Y}\tBlue");
+            }
+
+            for (int i = 0; i < pBest.Towns.Count - 1; i++)
+            {
+                logStringBuilder.AppendLine($"Arrow\t{pBest.Towns[i].X}\t{pBest.Towns[i].Y}\t{pBest.Towns[i + 1].X}\t{pBest.Towns[i + 1].Y}\tred");
+            }
+        }
+
+        private void SaveLog()
+        {
+            File.WriteAllText("TSP_GA.log", logStringBuilder.ToString());
+        }
+
+        private void GetInformation()
+        {
+            while (true)
+            {
+                lock (_lock)
+                {
+                    Console.SetCursorPosition(0, 2);
+                    Console.WriteLine($"Iteration: {iteration}\tFitness: {Result[Result.Count - 1].Fitness}\tElapsed time: {stopwatch.Elapsed}");
+                }
+
+                Thread.Sleep(300);
+            }
         }
 
         public override string ToString()
