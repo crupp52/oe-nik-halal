@@ -35,8 +35,8 @@ namespace Halal.Solvers.GeneticAlgorithm
             tsp.LoadTownsFromFile(filename);
 
             NumberOfPopulation = 50;
-            RateOfMutation = 0.1;
-            RateOfElitism = 0.2;
+            RateOfMutation = 0.01;
+            RateOfElitism = 0.1;
 
             Result = new List<Chromosome>();
 
@@ -79,7 +79,7 @@ namespace Halal.Solvers.GeneticAlgorithm
                         newPopulation.Chromosomes.Add(newChromosome);
                     }
 
-                    population = (Population)newPopulation.Clone();
+                    population = newPopulation;
                     pBest = Evaluation(population);
 
                     iteration++;
@@ -100,9 +100,24 @@ namespace Halal.Solvers.GeneticAlgorithm
             {
                 int a = rnd.Next(0, chromosome.Towns.Count);
                 int b = rnd.Next(0, chromosome.Towns.Count);
-                Town town = (Town)chromosome.Towns[a].Clone();
-                chromosome.Towns[a] = (Town)chromosome.Towns[b].Clone();
-                chromosome.Towns[b] = (Town)town.Clone();
+
+                Town town = new Town
+                {
+                    X = chromosome.Towns[a].X,
+                    Y = chromosome.Towns[a].Y,
+                };
+
+                chromosome.Towns[a] = new Town 
+                { 
+                    X = chromosome.Towns[b].X,
+                    Y = chromosome.Towns[b].Y
+                };
+
+                chromosome.Towns[b] = new Town 
+                {
+                    X = town.X,
+                    Y = town.Y
+                };
             }
 
             return chromosome;
@@ -112,8 +127,8 @@ namespace Halal.Solvers.GeneticAlgorithm
         {
             Chromosome child = new Chromosome();
 
-            Chromosome parent1 = (Chromosome)population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)].Clone();
-            Chromosome parent2 = (Chromosome)population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)].Clone();
+            Chromosome parent1 = population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)];
+            Chromosome parent2 = population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)];
 
             int cutIndex = rnd.Next(0, parent1.Towns.Count);
 
@@ -121,7 +136,7 @@ namespace Halal.Solvers.GeneticAlgorithm
 
             while (i < cutIndex)
             {
-                child.Towns.Add((Town)parent1.Towns[i].Clone());
+                child.Towns.Add(parent1.Towns[i]);
                 i++;
             }
 
@@ -144,12 +159,12 @@ namespace Halal.Solvers.GeneticAlgorithm
 
             for (int i = 0; i < rnd.Next(0, population.Chromosomes.Count); i++)
             {
-                matingPoppulation.Chromosomes.Add((Chromosome)population.Chromosomes.OrderBy(x => x.Fitness).ToList()[i].Clone());
+                matingPoppulation.Chromosomes.Add(population.Chromosomes.OrderBy(x => x.Fitness).ToList()[i]);
             }
 
             while (matingPoppulation.Chromosomes.Count != population.Chromosomes.Count)
             {
-                matingPoppulation.Chromosomes.Add((Chromosome)population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)].Clone());
+                matingPoppulation.Chromosomes.Add(population.Chromosomes[rnd.Next(0, population.Chromosomes.Count)]);
             }
 
             return matingPoppulation;
@@ -163,7 +178,7 @@ namespace Halal.Solvers.GeneticAlgorithm
 
             for (int i = 0; i < NumberOfPopulation * RateOfElitism / 4; i++)
             {
-                newPopulation.Chromosomes.Add((Chromosome)population.Chromosomes[i].Clone());
+                newPopulation.Chromosomes.Add(population.Chromosomes[i]);
             }
 
             return newPopulation;
@@ -172,7 +187,7 @@ namespace Halal.Solvers.GeneticAlgorithm
         private Population InitializePopulation(Chromosome chromosome)
         {
             Population population = new Population();
-            Chromosome newChromosome = (Chromosome)chromosome.Clone();
+            Chromosome newChromosome = chromosome;
 
             for (int i = 0; i < NumberOfPopulation; i++)
             {
@@ -181,12 +196,12 @@ namespace Halal.Solvers.GeneticAlgorithm
                 {
                     n--;
                     int k = rnd.Next(n + 1);
-                    Town value = (Town)newChromosome.Towns[k].Clone();
-                    newChromosome.Towns[k] = (Town)newChromosome.Towns[n].Clone();
+                    Town value = newChromosome.Towns[k];
+                    newChromosome.Towns[k] = newChromosome.Towns[n];
                     newChromosome.Towns[n] = value;
                 }
                 newChromosome.Fitness = TSP.Objective(newChromosome.Towns);
-                population.Chromosomes.Add((Chromosome)newChromosome.Clone());
+                population.Chromosomes.Add(newChromosome);
             }
 
             return population;

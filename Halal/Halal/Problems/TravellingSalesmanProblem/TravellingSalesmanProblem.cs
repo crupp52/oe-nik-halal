@@ -46,7 +46,7 @@ namespace Halal.Problems.TravellingSalesmanProblem
                 Town t1 = route[i];
                 Town t2 = route[i + 1];
 
-                sumLength += (float) Math.Sqrt(Math.Pow(t1.X - t2.X, 2) + Math.Pow(t1.Y - t2.X, 2));
+                sumLength += (float) Math.Sqrt(Math.Pow(t1.X - t2.X, 2) + Math.Pow(t1.Y - t2.Y, 2));
             }
 
             return sumLength;
