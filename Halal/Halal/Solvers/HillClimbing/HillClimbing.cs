@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Halal.Problems;
+using System;
 using System.Collections.Generic;
-using Halal.Problems.FunctionApproximation;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Halal.Solvers.HillClimbing
 {
-    public class HillClimbing
+    class HillClimbing
     {
         private static Random rnd = new Random();
 
-        public static void Solve(List<float> searchingField, int ds, int e)
+        public void Solve(List<IKeyValuePair> searchingField, int epsilon)
         {
-            ValuePair p = new ValuePair
-            {
-                Input = searchingField[rnd.Next(0,searchingField.Count)],
-                
-            };
+            IKeyValuePair point = searchingField[rnd.Next(0, searchingField.Count)];
+
         }
     }
 }

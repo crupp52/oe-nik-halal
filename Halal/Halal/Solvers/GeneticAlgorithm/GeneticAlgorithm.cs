@@ -241,7 +241,7 @@ namespace Halal.Solvers.GeneticAlgorithm
 
         private void SaveLog()
         {
-            File.WriteAllText("TSP_GA.log", logStringBuilder.ToString());
+            File.WriteAllText($"TSP_GA_{DateTime.Now.ToString("yyyyddMM")}.log", logStringBuilder.ToString());
         }
 
         private void GetInformation()

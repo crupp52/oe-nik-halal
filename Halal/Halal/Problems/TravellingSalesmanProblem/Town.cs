@@ -2,7 +2,7 @@
 
 namespace Halal.Problems.TravellingSalesmanProblem
 {
-    public class Town : ICloneable
+    public class Town : ICloneable, IKeyValuePair
     {
         public float X { get; set; }
         public float Y { get; set; }
