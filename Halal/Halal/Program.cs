@@ -1,6 +1,7 @@
 ﻿using Halal.Problems.TravellingSalesmanProblem;
 using Halal.Solvers.GeneticAlgorithm;
 using Halal.Solvers.HillClimbing;
+using Halal.Solvers.NSGA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Halal
     {
         public static void Main(string[] args)
         {
-            var menu = new Menu(new string[] { "TSP with GA", "FA with HC" });
+            var menu = new Menu(new string[] { "TSP with GA", "FA with HC", "WA with NSGA" });
             var menuPainter = new ConsoleMenuPainter(menu);
 
             bool done = false;
@@ -92,6 +93,9 @@ namespace Halal
                     case 1:
                         SolveHC();
                         break;
+                    case 2:
+                        SolveNSGA();
+                        break;
                     default:
                         break;
                 }
@@ -122,6 +126,18 @@ namespace Halal
             hc.Solve(3);
 
             Console.WriteLine("FA HC Solver Finished");
+        }
+
+        private static void SolveNSGA()
+        {
+            NSGA nsga = new NSGA();
+
+            Console.WriteLine("WA NSGA Solver Started");
+            Console.WriteLine("Press ESC to stop");
+
+            nsga.Solve();
+
+            Console.WriteLine("WA NSGA Solver Finished");
         }
     }
 }

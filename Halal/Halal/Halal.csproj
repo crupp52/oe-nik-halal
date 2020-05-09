@@ -45,12 +45,16 @@
     <Compile Include="Problems\SmallestBoundaryPolygon\SmallestBoundaryPolygon.cs" />
     <Compile Include="Problems\TravellingSalesmanProblem\Town.cs" />
     <Compile Include="Problems\TravellingSalesmanProblem\TravellingSalesmanProblem.cs" />
+    <Compile Include="Problems\WorkAssignment\Person.cs" />
+    <Compile Include="Problems\WorkAssignment\WorkAssignment.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Solvers\GeneticAlgorithm\GeneticAlgorithm.cs" />
     <Compile Include="Solvers\GeneticAlgorithm\Models\Chromosome.cs" />
     <Compile Include="Solvers\GeneticAlgorithm\Models\Population.cs" />
     <Compile Include="Solvers\HillClimbing\HillClimbing.cs" />
+    <Compile Include="Solvers\NSGA\Models\Population.cs" />
+    <Compile Include="Solvers\NSGA\NSGA.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utils\" />
