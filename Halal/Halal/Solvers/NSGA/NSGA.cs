@@ -39,7 +39,7 @@ namespace Halal.Solvers.NSGA
 
                 foreach (Person person in population)
                 {
-                    if (population.Except(new List<Person> { person }).Where(x => x.Quality > person.Quality && x.Salary < person.Salary).Count() == 0)
+                    if (population.Except(new List<Person> { person }).Where(x => x.Quality >= person.Quality && x.Salary <= person.Salary).Count() == 0)
                     {
                         paretoFront.Add(person);
                     }
@@ -63,7 +63,9 @@ namespace Halal.Solvers.NSGA
 
                 fitnessBase = paretoFront.Min(x => x.Fitness) * fitnessDeg;
             }
-            
+
+            matingPool = matingPool.OrderByDescending(x => x.Fitness).ThenBy(x => x.SharingValue).ToList();
+
             return matingPool;
         }
 
