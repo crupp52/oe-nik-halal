@@ -32,6 +32,18 @@ namespace Halal.Problems.WorkAssignment
             }
         }
 
+        public void SaveToFile(string filename = "wa_nsgaii_input.txt")
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (Person person in People)
+            {
+                stringBuilder.AppendLine($"{person.Salary}\t{person.Quality}");
+            }
+
+            File.WriteAllText(filename, stringBuilder.ToString());
+        }
+
         public float SumSalary(List<float> solution)
         {
             float sum = 0;
@@ -54,6 +66,25 @@ namespace Halal.Problems.WorkAssignment
             }
 
             return sum / RequestedTime;
+        }
+
+        public void GeneratePeople(int numberOfPeople)
+        {
+            Random rnd = new Random();
+
+            People = new List<Person>();
+
+            while (People.Count != numberOfPeople)
+            {
+                Person person = new Person() { Quality = rnd.Next(0, 11) / 10f, Salary = rnd.Next(100, 5001) };
+
+                if (People.Where(x=> x.Salary == person.Salary && x.Quality == person.Quality).Count() == 0)
+                {
+                    People.Add(person);
+                }
+            }
+
+            SaveToFile();
         }
     }
 }

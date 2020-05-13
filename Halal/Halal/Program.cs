@@ -151,7 +151,7 @@ namespace Halal
             Console.WriteLine("WA NSGAII Solver Started");
             Console.WriteLine("Press ESC to stop");
 
-            nsgaii.Solve();
+            var res = nsgaii.Solve();
 
             Console.WriteLine("WA NSGAII Solver Finished");
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Halal.Solvers.NSGAII
 {
@@ -26,7 +27,7 @@ namespace Halal.Solvers.NSGAII
                 i++;
             }
 
-            return pBest;
+            return pBest.Distinct().ToList();
         }
 
         private void NonDominatedSort(List<Person> people)
@@ -117,11 +118,13 @@ namespace Halal.Solvers.NSGAII
 
             int pfi = 1;
 
-            while (matingPool.Count < p.Count)
+            const int N = 6;
+
+            while (matingPool.Count < N)
             {
                 List<Person> paretoFront = r.Where(x => x.Rank == pfi).ToList();
 
-                if (matingPool.Count + paretoFront.Count <= p.Count)
+                if (matingPool.Count + paretoFront.Count <= N)
                 {
                     matingPool.AddRange(paretoFront);
                 }
@@ -130,7 +133,7 @@ namespace Halal.Solvers.NSGAII
                     CrowdingDistance(paretoFront);
                     paretoFront = paretoFront.OrderBy(x => x.Distance).ToList();
 
-                    for (int i = 0; i < p.Count - matingPool.Count; i++)
+                    for (int i = 0; i < N - matingPool.Count; i++)
                     {
                         matingPool.Add(paretoFront[i]);
                     }
@@ -143,14 +146,14 @@ namespace Halal.Solvers.NSGAII
         private List<Person> InitializePopulation()
         {
             WorkAssignment wa = new WorkAssignment();
-            wa.LoadFromFile("Salary.txt");
+            wa.GeneratePeople(50);
 
             return wa.People;
         }
 
         private List<Person> MakeNewPopulation(List<Person> p)
         {
-            return p.Take(6).ToList();
+            return p.OrderBy(x => x.Distance).Take(p.Count / 5).ToList();
         }
     }
 }
