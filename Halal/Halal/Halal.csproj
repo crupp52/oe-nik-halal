@@ -53,6 +53,7 @@
     <Compile Include="Solvers\GeneticAlgorithm\Models\Chromosome.cs" />
     <Compile Include="Solvers\GeneticAlgorithm\Models\Population.cs" />
     <Compile Include="Solvers\HillClimbing\HillClimbing.cs" />
+    <Compile Include="Solvers\NSGAII\NSGAII.cs" />
     <Compile Include="Solvers\NSGA\Models\Population.cs" />
     <Compile Include="Solvers\NSGA\NSGA.cs" />
   </ItemGroup>

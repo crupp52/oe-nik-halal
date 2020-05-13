@@ -2,6 +2,7 @@
 using Halal.Solvers.GeneticAlgorithm;
 using Halal.Solvers.HillClimbing;
 using Halal.Solvers.NSGA;
+using Halal.Solvers.NSGAII;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace Halal
     {
         public static void Main(string[] args)
         {
-            var menu = new Menu(new string[] { "TSP with GA", "FA with HC", "WA with NSGA" });
+            var menu = new Menu(new string[] { "TSP with GA", "FA with HC", "WA with NSGA", "WA with NSGAII" });
             var menuPainter = new ConsoleMenuPainter(menu);
 
             bool done = false;
@@ -95,6 +96,9 @@ namespace Halal
                         break;
                     case 2:
                         SolveNSGA();
+                        break;
+                    case 3:
+                        SolveNSGAII();
                         break;
                     default:
                         break;
@@ -138,6 +142,18 @@ namespace Halal
             nsga.Solve();
 
             Console.WriteLine("WA NSGA Solver Finished");
+        }
+
+        private static void SolveNSGAII()
+        {
+            NSGAII nsgaii = new NSGAII();
+
+            Console.WriteLine("WA NSGAII Solver Started");
+            Console.WriteLine("Press ESC to stop");
+
+            nsgaii.Solve();
+
+            Console.WriteLine("WA NSGAII Solver Finished");
         }
     }
 }

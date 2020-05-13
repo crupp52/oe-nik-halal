@@ -1,22 +1,22 @@
 ﻿using Halal.Problems.WorkAssignment;
-using Halal.Solvers.GeneticAlgorithm.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Halal.Solvers.NSGA
 {
     class NSGA
     {
         private WorkAssignment workAssignment;
+        private Stopwatch stopwatch;
 
         public List<Person> People { get; set; }
 
         public NSGA()
         {
+            stopwatch = new Stopwatch();
+
             workAssignment = new WorkAssignment();
             workAssignment.LoadFromFile("Salary.txt");
 
@@ -25,7 +25,11 @@ namespace Halal.Solvers.NSGA
 
         public void Solve()
         {
-            var result = NsgaSelection(People, 0.1f);
+            stopwatch.Start();
+            var result = NsgaSelection(People, 0.31f);
+            stopwatch.Stop();
+
+            ToLog(People, result);
         }
 
         private List<Person> NsgaSelection(List<Person> population, float fitnessDeg)
@@ -72,5 +76,13 @@ namespace Halal.Solvers.NSGA
         private float Distance(Person p1, Person p2) => Math.Abs(p1.Salary - p2.Salary) + Math.Abs(p1.Quality - p2.Quality);
 
         private float Sharing(float distance) => 1 / distance;
+
+        private void ToLog(List<Person> oldList, List<Person> newList)
+        {
+            for (int i = 0; i < oldList.Count; i++)
+            {
+                Console.WriteLine($"({oldList[i].Quality}; {oldList[i].Salary}) -> ({newList[i].Quality}; {newList[i].Salary})");
+            }
+        }
     }
 }
