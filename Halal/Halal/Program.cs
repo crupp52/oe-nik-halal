@@ -59,7 +59,7 @@ namespace Halal
     {
         public static void Main(string[] args)
         {
-            var menu = new Menu(new string[] { "TSP with GA", "FA with HC", "WA with NSGA", "WA with NSGAII" });
+            var menu = new Menu(new string[] { "TSP with GA", "FA with HC", "WA with NSGAII" });
             var menuPainter = new ConsoleMenuPainter(menu);
 
             bool done = false;
@@ -95,9 +95,6 @@ namespace Halal
                         SolveHC();
                         break;
                     case 2:
-                        SolveNSGA();
-                        break;
-                    case 3:
                         SolveNSGAII();
                         break;
                     default:

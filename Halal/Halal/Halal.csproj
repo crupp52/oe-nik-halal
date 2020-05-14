@@ -41,8 +41,6 @@
     <Compile Include="Problems\FunctionApproximation\FunctionApproximation.cs" />
     <Compile Include="Problems\FunctionApproximation\ValuePair.cs" />
     <Compile Include="Problems\IKeyValuePair.cs" />
-    <Compile Include="Problems\SmallestBoundaryPolygon\Point.cs" />
-    <Compile Include="Problems\SmallestBoundaryPolygon\SmallestBoundaryPolygon.cs" />
     <Compile Include="Problems\TravellingSalesmanProblem\Town.cs" />
     <Compile Include="Problems\TravellingSalesmanProblem\TravellingSalesmanProblem.cs" />
     <Compile Include="Problems\WorkAssignment\Person.cs" />

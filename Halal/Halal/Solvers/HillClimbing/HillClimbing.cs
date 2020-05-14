@@ -45,7 +45,8 @@ namespace Halal.Solvers.HillClimbing
                 {
                     iteration++;
 
-                    float[] newCoefficients = (float[])actualCoefficients.Clone();
+                    float[] newCoefficients = 
+                        (float[])actualCoefficients.Clone();
                     float[] temp = (float[])newCoefficients.Clone();
                     float value = temp[i] - epsilon;
 
@@ -54,15 +55,18 @@ namespace Halal.Solvers.HillClimbing
                         value += 0.1f;
                         temp[i] = value;
 
-                        if (fa.Objective(temp.ToList()) < fa.Objective(newCoefficients.ToList()))
+                        if (fa.Objective(temp.ToList()) 
+                            < fa.Objective(newCoefficients.ToList()))
                         {
                             newCoefficients = (float[])temp.Clone();
                         }
                     }
 
-                    if (fa.Objective(newCoefficients.ToList()) < fa.Objective(actualCoefficients.ToList()))
+                    if (fa.Objective(newCoefficients.ToList()) 
+                        < fa.Objective(actualCoefficients.ToList()))
                     {
-                        actualCoefficients = (float[])newCoefficients.Clone();
+                        actualCoefficients = 
+                            (float[])newCoefficients.Clone();
                     }
                     else
                     {

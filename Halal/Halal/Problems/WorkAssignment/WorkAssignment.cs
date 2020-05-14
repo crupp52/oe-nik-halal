@@ -36,6 +36,8 @@ namespace Halal.Problems.WorkAssignment
         {
             StringBuilder stringBuilder = new StringBuilder();
 
+            stringBuilder.AppendLine("100");
+
             foreach (Person person in People)
             {
                 stringBuilder.AppendLine($"{person.Salary}\t{person.Quality}");

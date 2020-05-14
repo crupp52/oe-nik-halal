@@ -1,6 +1,7 @@
 ﻿using Halal.Problems.WorkAssignment;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -10,6 +11,9 @@ namespace Halal.Solvers.NSGAII
     {
         public List<Person> Solve()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             List<Person> p = InitializePopulation();
 
             List<Person> q = new List<Person>();
@@ -27,7 +31,22 @@ namespace Halal.Solvers.NSGAII
                 i++;
             }
 
-            return pBest.Distinct().ToList();
+            List<Person> result = new List<Person>();
+
+            foreach (var item in pBest.OrderBy(x => x.Distance))
+            {
+                if (result.Where(x=>x.Salary == item.Salary && x.Quality == item.Quality).Count() == 0)
+                {
+                    result.Add(item);
+                }
+            }
+
+            stopwatch.Stop();
+            Console.WriteLine($"Elapsed time: {stopwatch.Elapsed}");
+
+            ToLog(result);
+
+            return result;
         }
 
         private void NonDominatedSort(List<Person> people)
@@ -118,7 +137,7 @@ namespace Halal.Solvers.NSGAII
 
             int pfi = 1;
 
-            const int N = 6;
+            const int N = 10;
 
             while (matingPool.Count < N)
             {
@@ -146,14 +165,23 @@ namespace Halal.Solvers.NSGAII
         private List<Person> InitializePopulation()
         {
             WorkAssignment wa = new WorkAssignment();
-            wa.GeneratePeople(50);
+            wa.LoadFromFile("wa_nsgaii_input.txt");
+            //wa.GeneratePeople(50);
 
             return wa.People;
         }
 
         private List<Person> MakeNewPopulation(List<Person> p)
         {
-            return p.OrderBy(x => x.Distance).Take(p.Count / 5).ToList();
+            return p.OrderBy(x => x.Distance).Take(p.Count / 2).ToList();
+        }
+
+        private void ToLog(List<Person> newList)
+        {
+            foreach (Person person in newList)
+            {
+                Console.WriteLine($"{person.Quality} - {person.Salary}");
+            }
         }
     }
 }

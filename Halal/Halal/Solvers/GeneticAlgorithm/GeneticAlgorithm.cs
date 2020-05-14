@@ -51,7 +51,6 @@ namespace Halal.Solvers.GeneticAlgorithm
             pBest = Evaluation(population);
             Result.Add((Chromosome)pBest.Clone());
             iteration = 0;
-            didntNewBest = 0;
 
             Task.Run(() => GetInformation());
             do
@@ -62,11 +61,6 @@ namespace Halal.Solvers.GeneticAlgorithm
                     {
                         Result.Add((Chromosome)pBest);
                         ToLog();
-                        didntNewBest = 0;
-                    }
-                    else
-                    {
-                        didntNewBest++;
                     }
 
                     Population newPopulation = SelectParents(population);
